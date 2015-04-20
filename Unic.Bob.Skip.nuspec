@@ -10,7 +10,7 @@
         <description>Unic.Bob.Skio</description>
     </metadata>
     <files>
-        <file src="src" target="" />
-        <file src="packages" target="tools\packages" exclude="**\Unic.Bob.Keith\**" />
+        <file src="src\**" target="" />
+        <file src="packages\**" target="tools\packages" exclude="**\Unic.Bob.Keith\**" />
     </files>
 </package>
