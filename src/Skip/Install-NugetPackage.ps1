@@ -28,10 +28,7 @@ function Install-NugetPackage
             Write-Error "Source for Sitecore package could not be found. Make sure Bob.config contains the NuGetFeed key."
         }
 
-        $nugetConfig = [System.Environment]::GetFolderPath("ApplicationData") + "\NuGet\NuGet.config"
-        if($env:NuGetConfig) {
-            $nugetConfig = $env:NuGetConfig
-        }
+        $nugetConfig = Get-NugetConfig
 
         $fs = New-Object NuGet.PhysicalFileSystem $pwd
         $setting = [NuGet.Settings]::LoadDefaultSettings($fs,  $nugetConfig, $null);
@@ -44,7 +41,30 @@ function Install-NugetPackage
         $repo = New-Object  NuGet.DataServicePackageRepository $Source
 
         Write-Verbose "Install $packageId $version to $OutputLocation"
-        $packages = $repo.FindPackagesById($packageId)
+        try {
+            $packages = $repo.FindPackagesById($packageId)
+        }
+        catch {
+            if($_.Exception.InnerException.GetType() -eq [System.InvalidOperationException]) {
+                Read-NugetCredentials -Source $source
+
+                # NuGet caches the metdata, we need to clear the cache in order to get the correct one after adding the credentials
+                $cache = [NuGet.MemoryCache].GetProperty("Instance", ("Static","NonPublic")).GetValue($null)
+                $removeCache = $cache.GetType().GetMethod("Remove", ("Instance", "NonPublic"))
+                $removeCache.Invoke($cache, "DataServiceMetadata|$source`$metadata")
+
+                $setting = [NuGet.Settings]::LoadDefaultSettings($fs,  $nugetConfig, $null);
+                $sourceProvider = New-Object NuGet.PackageSourceProvider $setting
+                $credentialProvider = New-Object NuGet.SettingsCredentialProvider -ArgumentList `
+                    ([NuGet.ICredentialProvider][NuGet.NullCredentialProvider]::Instance), ([NuGet.IPackageSourceProvider]$sourceProvider)
+                [NuGet.HttpClient]::DefaultCredentialProvider = $credentialProvider
+
+                $packages = $repo.FindPackagesById($packageId)
+            }
+            else {
+                throw $_
+            }
+        }
         if($Version) {
             $packageToInstall = $packages | ? {$_.Version -eq $version}
         }
