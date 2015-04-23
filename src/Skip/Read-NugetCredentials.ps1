@@ -1,12 +1,16 @@
 <#
 .SYNOPSIS
+Reads the NuGet crerdentials for a source and adds them to the NuGete config.
 
 .DESCRIPTION
+Asks the user for the usernamee and password for the specified source.
+The credentials are then stored to the NuGet.config for further use.
 
-
-.PARAMETER
+.PARAMETER Source
+The source (feed-url) to ask credentials for.
 
 .EXAMPLE
+Read-NugetCredentials "https://teamcity.unic.com/httpAuth/nuget/api/v1"
 
 #>
 function Read-NugetCredentials

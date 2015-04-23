@@ -1,12 +1,17 @@
 <#
 .SYNOPSIS
+Gets the path to the current NuGet config.
 
 .DESCRIPTION
+Gets the path to the current NuGet config.
+Normaly this will be %AppData%\NuGet\NuGet.config, but it can be overridden by
+setting the environment variable `NuGetConfig`.
 
-
-.PARAMETER
+If the file does not exist yet, it will be created.
 
 .EXAMPLE
+Get-NugetConfig
+
 
 #>
 function Get-NugetConfig

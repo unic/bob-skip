@@ -1,12 +1,25 @@
 <#
 .SYNOPSIS
+Installs the specified NuGet package to the specified location.
 
 .DESCRIPTION
+Downloads and extracts the specified NuGet package to a specified location.
 
+.PARAMETER PackagId
+The id of the package to install.
 
-.PARAMETER
+.PARAMETER OutputLocation
+The location where the content of the package will be extracted to.
+
+.PARAMETER Version
+The version of the package to install.
+If none is specified, the newest prerelease will be installed.
+
+.PARAMETER ProjectPath
+The path to the website project containing e.g. the Bob.config.
 
 .EXAMPLE
+Install-NugetPackage -PackageId Unic.Bob.Keith D:\temp\Keith
 
 #>
 function Install-NugetPackage

@@ -1,12 +1,25 @@
 <#
 .SYNOPSIS
+Sets the specified NuGet credentials in the NuGet.config
 
 .DESCRIPTION
+Adds or update the specified credentials for the specified source in the NuGet.config
+If the source doesn't exist yet in the NuGet.config it will be created.
 
+.PARAMETER Username
+The username to set.
 
-.PARAMETER
+.PARAMETER Password
+The password to set.
+
+.PARAMETER Source
+The source for which the username and password should be set.
+
+.PARAMETER SourceName
+The name of the source in the NuGet.config.
 
 .EXAMPLE
+Set-NuGetCredentials -Username bob.thebuilder -Password W3ndy -Source https://teamcity.unic.com/some/endpoint
 
 #>
 function Set-NugetCredentials
