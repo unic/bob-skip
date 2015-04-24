@@ -4,6 +4,8 @@ Installs the specified NuGet package to the specified location.
 
 .DESCRIPTION
 Downloads and extracts the specified NuGet package to a specified location.
+A Nuget package can be specified by either passing the package id and the version
+or by passing directly the package-object.
 
 .PARAMETER PackagId
 The id of the package to install.
@@ -14,6 +16,9 @@ The location where the content of the package will be extracted to.
 .PARAMETER Version
 The version of the package to install.
 If none is specified, the newest prerelease will be installed.
+
+.PARAMETER Package
+The package to install.
 
 .PARAMETER ProjectPath
 The path to the website project containing e.g. the Bob.config.
@@ -26,68 +31,34 @@ function Install-NugetPackage
 {
     [CmdletBinding()]
     Param(
-        [Parameter(Mandatory=$true)]
+        [Parameter(Mandatory=$true, ParameterSetName ="FindPackage")]
         [string] $PackageId,
         [Parameter(Mandatory=$true)]
         [string] $OutputLocation,
+        [Parameter(ParameterSetName ="FindPackage")]
         [string] $Version,
+        [Parameter(Mandatory=$true, ParameterSetName ="InstallPackage")]
+        [NuGet.IPackage] $Package,
         [string] $ProjectPath
     )
     Process
     {
-        $config = Get-ScProjectConfig $ProjectPath
-        $source = $config.NuGetFeed
-        if(-not $source) {
-            Write-Error "Source for Sitecore package could not be found. Make sure Bob.config contains the NuGetFeed key."
-        }
+        if(-not $Package) {
+            $packages = Get-NugetPackage $PackageId $ProjectPath
 
-        $nugetConfig = Get-NugetConfig
-
-        $fs = New-Object NuGet.PhysicalFileSystem $pwd
-        $setting = [NuGet.Settings]::LoadDefaultSettings($fs,  $nugetConfig, $null);
-        $sourceProvider = New-Object NuGet.PackageSourceProvider $setting
-
-        $credentialProvider = New-Object NuGet.SettingsCredentialProvider -ArgumentList ([NuGet.ICredentialProvider][NuGet.NullCredentialProvider]::Instance), ([NuGet.IPackageSourceProvider]$sourceProvider)
-
-        [NuGet.HttpClient]::DefaultCredentialProvider = $credentialProvider
-
-        $repo = New-Object  NuGet.DataServicePackageRepository $Source
-
-        Write-Verbose "Install $packageId $version to $OutputLocation"
-        try {
-            $packages = $repo.FindPackagesById($packageId)
-        }
-        catch {
-            if($_.Exception.InnerException.GetType() -eq [System.InvalidOperationException]) {
-                Read-NugetCredentials -Source $source
-
-                # NuGet caches the metdata, we need to clear the cache in order to get the correct one after adding the credentials
-                $cache = [NuGet.MemoryCache].GetProperty("Instance", ("Static","NonPublic")).GetValue($null)
-                $removeCache = $cache.GetType().GetMethod("Remove", ("Instance", "NonPublic"))
-                $removeCache.Invoke($cache, "DataServiceMetadata|$source`$metadata")
-
-                $setting = [NuGet.Settings]::LoadDefaultSettings($fs,  $nugetConfig, $null);
-                $sourceProvider = New-Object NuGet.PackageSourceProvider $setting
-                $credentialProvider = New-Object NuGet.SettingsCredentialProvider -ArgumentList `
-                    ([NuGet.ICredentialProvider][NuGet.NullCredentialProvider]::Instance), ([NuGet.IPackageSourceProvider]$sourceProvider)
-                [NuGet.HttpClient]::DefaultCredentialProvider = $credentialProvider
-
-                $packages = $repo.FindPackagesById($packageId)
+            if($Version) {
+                $packageToInstall = $packages | ? {$_.Version -eq $version}
             }
             else {
-                throw $_
+                $packageToInstall = $packages | sort {$_.Version} | select -last 1
+            }
+            if(-not $packageToInstall) {
+                Write-Error "Package $packageId with version $version not found"
             }
         }
-        if($Version) {
-            $packageToInstall = $packages | ? {$_.Version -eq $version}
-        }
         else {
-            $packageToInstall = $packages | sort {$_.Version} | select -last 1
+            $packageToInstall = $Package
         }
-        if(-not $packageToInstall) {
-            Write-Error "Package $packageId with version $version not found"
-        }
-
         $outputFileSystem = New-Object NuGet.PhysicalFileSystem $OutputLocation
         $outputFileSystem.AddFiles($packageToInstall.GetFiles(), $OutputLocation)
     }
