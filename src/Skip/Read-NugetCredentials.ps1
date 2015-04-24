@@ -1,9 +1,9 @@
 <#
 .SYNOPSIS
-Reads the NuGet crerdentials for a source and adds them to the NuGete config.
+Reads the NuGet crerdentials for a source and adds them to the NuGet config.
 
 .DESCRIPTION
-Asks the user for the usernamee and password for the specified source.
+Asks the user for the username and password for the specified source.
 The credentials are then stored to the NuGet.config for further use.
 
 .PARAMETER Source

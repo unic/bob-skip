@@ -3,7 +3,7 @@
 Sets the specified NuGet credentials in the NuGet.config
 
 .DESCRIPTION
-Adds or update the specified credentials for the specified source in the NuGet.config
+Adds or updates the specified credentials for the specified source in the NuGet.config
 If the source doesn't exist yet in the NuGet.config it will be created.
 
 .PARAMETER Username
