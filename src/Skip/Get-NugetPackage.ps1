@@ -11,6 +11,9 @@ The id of the NuGet package to get.
 .PARAMETER ProjectPath
 The path to the website project containing e.g. the Bob.config.
 
+.PARAMETER Source
+The source to use to get the package.
+
 .EXAMPLE
 Get-NugetPackage Unic.Bob.Skip
 
@@ -21,14 +24,17 @@ function Get-NugetPackage
     Param(
         [Parameter(Mandatory=$true)]
         [string] $PackageId,
-        [string] $ProjectPath
+        [string] $ProjectPath,
+        [string] $Source
     )
     Process
     {
-        $config = Get-ScProjectConfig $ProjectPath
-        $source = $config.NuGetFeed
-        if(-not $source) {
-            Write-Error "Source for Sitecore package could not be found. Make sure Bob.config contains the NuGetFeed key."
+        if(-not $Source) {
+            $config = Get-ScProjectConfig $ProjectPath
+            $source = $config.NuGetFeed
+            if(-not $source) {
+                Write-Error "Source for Sitecore package could not be found. Make sure Bob.config contains the NuGetFeed key."
+            }
         }
 
         $nugetConfig = Get-NugetConfig
