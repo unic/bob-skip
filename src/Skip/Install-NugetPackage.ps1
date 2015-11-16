@@ -60,6 +60,7 @@ function Install-NugetPackage
             $packageToInstall = $Package
         }
         $outputFileSystem = New-Object NuGet.PhysicalFileSystem $OutputLocation
+        $outputFileSystem.DeleteFiles($packageToInstall.GetFiles(), $OutputLocation)
         $outputFileSystem.AddFiles($packageToInstall.GetFiles(), $OutputLocation)
     }
 }
