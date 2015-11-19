@@ -23,6 +23,10 @@ The package to install.
 .PARAMETER ProjectPath
 The path to the website project containing e.g. the Bob.config.
 
+.PARAMETER RemoveFiles
+If yes, every file contained in the package to install is removed before the
+package is extracted to the filesystem.
+
 .EXAMPLE
 Install-NugetPackage -PackageId Unic.Bob.Keith D:\temp\Keith
 
@@ -39,7 +43,8 @@ function Install-NugetPackage
         [string] $Version,
         [Parameter(Mandatory=$true, ParameterSetName ="InstallPackage")]
         [NuGet.IPackage] $Package,
-        [string] $ProjectPath
+        [string] $ProjectPath,
+        [bool] $RemoveFiles = $false
     )
     Process
     {
@@ -60,7 +65,9 @@ function Install-NugetPackage
             $packageToInstall = $Package
         }
         $outputFileSystem = New-Object NuGet.PhysicalFileSystem $OutputLocation
-        $outputFileSystem.DeleteFiles($packageToInstall.GetFiles(), $OutputLocation)
+        if ($RemoveFiles) {
+            $outputFileSystem.DeleteFiles($packageToInstall.GetFiles(), $OutputLocation)
+        }
         $outputFileSystem.AddFiles($packageToInstall.GetFiles(), $OutputLocation)
     }
 }
