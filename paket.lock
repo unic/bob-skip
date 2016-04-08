@@ -1,9 +1,9 @@
 NUGET
   remote: https://nuget.org/api/v2
   specs:
-    NuGet.CommandLine (2.8.5)
-    Pester (3.3.11)
+    NuGet.CommandLine (2.8.6)
+    Pester (3.4.0)
   remote: https://teamcity.unic.com/httpAuth/app/nuget/v1/FeedService.svc
   specs:
-    Unic.Bob.Config (1.4.0)
+    Unic.Bob.Config (2.0.0-release0000)
     Unic.Bob.Keith (1.1.0)
