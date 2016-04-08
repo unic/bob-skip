@@ -5,5 +5,5 @@ NUGET
     Pester (3.4.0)
   remote: https://teamcity.unic.com/httpAuth/app/nuget/v1/FeedService.svc
   specs:
-    Unic.Bob.Config (2.0.0-release0000)
+    Unic.Bob.Config (2.0.0)
     Unic.Bob.Keith (1.1.0)
