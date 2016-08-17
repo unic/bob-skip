@@ -68,6 +68,10 @@ function Install-NugetPackage
         if ($RemoveFiles) {
             $outputFileSystem.DeleteFiles($packageToInstall.GetFiles(), $OutputLocation)
         }
-        $outputFileSystem.AddFiles($packageToInstall.GetFiles(), $OutputLocation)
+
+        foreach ($file in $packageToInstall.GetFiles()) {
+            $path = Join-Path $OutputLocation $file.Path
+            $outputFileSystem.AddFile($path, $file.GetStream());
+        }
     }
 }
