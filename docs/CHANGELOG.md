@@ -1,5 +1,8 @@
 # Changelog
 
+## 2.1 
+* Fix issue when files don't get overwritten if a new version of a package is installed.
+
 ## 1.2
 * Updated the theme
 
