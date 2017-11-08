@@ -19,6 +19,6 @@ function ResolvePath() {
 }
 
 
-Import-Module (ResolvePath "Unic.Bob.Config" "tools\BobConfig")
+Import-Module (ResolvePath "Unic.Bob.Wendy" "tools\Wendy")
 $nuget = [System.IO.File]::ReadAllBytes((ResolvePath "NuGet.CommandLine" "tools\nuget.exe"))
 [System.Reflection.Assembly]::Load($nuget)
