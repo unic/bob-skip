@@ -1,4 +1,4 @@
-![Build](https://ci.appveyor.com/api/projects/status/github/unic/bob-rubble?svg=true)
+![Build](https://ci.appveyor.com/api/projects/status/github/unic/bob-skip?svg=true)
 
 # Skip - Interacting with NuGet
 
