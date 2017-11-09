@@ -1,9 +1,10 @@
-# Skip - Tools for interacting with NuGet
+![Build](https://ci.appveyor.com/api/projects/status/github/unic/bob-skip?svg=true)
 
+# Skip - Interacting with NuGet
 
-### Build
-[![Build](https://teamcity.unic.com/httpAuth/app/rest/builds/buildType:Sitecore_Frameworks_Bob_Skip_Build/statusIcon)](https://teamcity.unic.com/viewType.html?buildTypeId=Sitecore_Frameworks_Bob_Skip_Build)
+Skip provides a wrapper around the NuGet.CommandLine and is built to serve other Bob machines to handle all the NuGet things.
 
 ## Documentation
 
-<https://teamcity.unic.com/repository/download/Sitecore_Frameworks_Bob_TheBook_BuildTheBook/.lastSuccessful/Skip/README.html>
+See [latest documentation](https://unic.github.io/bob-skip)
+
