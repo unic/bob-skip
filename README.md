@@ -1,4 +1,5 @@
-[![build status][1][2]
+[![build status][1]][2]
+
 [1]: https://ci.appveyor.com/api/projects/status/github/unic/bob-skip?svg=true
 [2]: https://ci.appveyor.com/api/projects/status/github/unic/bob-skip
 
