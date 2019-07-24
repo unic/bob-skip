@@ -40,38 +40,22 @@ function Install-NugetPackage
         [Parameter(Mandatory=$true)]
         [string] $OutputLocation,
         [Parameter(ParameterSetName ="FindPackage")]
-        [string] $Version,
-        [Parameter(Mandatory=$true, ParameterSetName ="InstallPackage")]
-        [NuGet.IPackage] $Package,
-        [string] $ProjectPath,
-        [bool] $RemoveFiles = $false
+        [string] $Version
     )
-    Process
-    {
-        if(-not $Package) {
-            $packages = Get-NugetPackage $PackageId $ProjectPath
+    Process {
 
-            if($Version) {
-                $packageToInstall = $packages | ? {$_.Version -eq $version}
-            }
-            else {
-                $packageToInstall = $packages | sort {$_.Version} | select -last 1
-            }
-            if(-not $packageToInstall) {
-                Write-Error "Package $packageId with version $version not found"
-            }
-        }
-        else {
-            $packageToInstall = $Package
-        }
-        $outputFileSystem = New-Object NuGet.PhysicalFileSystem $OutputLocation
-        if ($RemoveFiles) {
-            $outputFileSystem.DeleteFiles($packageToInstall.GetFiles(), $OutputLocation)
+        $nuget = ResolvePath -PackageId "NuGet.CommandLine" -RelativePath "tools\NuGet.exe"
+
+        if($Version) {
+            & $nuget install $PackageId -ExcludeVersion -PreRelease -NonInteractive -Version $Version
+        } else {
+            & $nuget install $PackageId -ExcludeVersion -PreRelease -NonInteractive        
         }
 
-        foreach ($file in $packageToInstall.GetFiles()) {
-            $path = Join-Path $OutputLocation $file.Path
-            $outputFileSystem.AddFile($path, $file.GetStream());
+        if(Test-Path $PackageId) {
+            Get-ChildItem -Path $PackageId -Exclude *.nupkg | Copy-Item -Destination $OutputLocation -Force
+            Remove-Item -Path $PackageId -Recurse -Force
         }
+
     }
 }
