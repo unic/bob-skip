@@ -17,15 +17,8 @@ The location where the content of the package will be extracted to.
 The version of the package to install.
 If none is specified, the newest prerelease will be installed.
 
-.PARAMETER Package
-The package to install.
-
-.PARAMETER ProjectPath
-The path to the website project containing e.g. the Bob.config.
-
-.PARAMETER RemoveFiles
-If yes, every file contained in the package to install is removed before the
-package is extracted to the filesystem.
+.PARAMETER Source
+The source feed url to use
 
 .EXAMPLE
 Install-NugetPackage -PackageId Unic.Bob.Keith D:\temp\Keith
@@ -40,17 +33,22 @@ function Install-NugetPackage
         [Parameter(Mandatory=$true)]
         [string] $OutputLocation,
         [Parameter(ParameterSetName ="FindPackage")]
-        [string] $Version
+        [string] $Version,
+        [Parameter(ParameterSetName ="FindPackage")]
+        [string] $Source
     )
     Process {
 
         $nuget = ResolvePath -PackageId "NuGet.CommandLine" -RelativePath "tools\NuGet.exe"
 
+        $args = ("install", $PackageId, "-ExcludeVersion", "-PreRelease", "-NonInteractive")
         if($Version) {
-            & $nuget install $PackageId -ExcludeVersion -PreRelease -NonInteractive -Version $Version
-        } else {
-            & $nuget install $PackageId -ExcludeVersion -PreRelease -NonInteractive        
+            $args = $args + @("-Version", $Version)
         }
+        if($Source) {
+            $args = $args + @("-Source", $Source)
+        }
+        & $nuget $args
 
         if(Test-Path $PackageId) {
             Get-ChildItem -Path $PackageId -Exclude *.nupkg | Copy-Item -Destination $OutputLocation -Force
