@@ -51,7 +51,7 @@ function Install-NugetPackage
         & $nuget $args
 
         if(Test-Path $PackageId) {
-            Get-ChildItem -Path $PackageId -Exclude *.nupkg | Copy-Item -Destination $OutputLocation -Force
+            Get-ChildItem -Path $PackageId -Exclude *.nupkg | Copy-Item -Destination $OutputLocation -Recurse -Force
             Remove-Item -Path $PackageId -Recurse -Force
         }
 
