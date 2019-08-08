@@ -42,6 +42,7 @@ function Install-NugetPackage
         $nuget = ResolvePath -PackageId "NuGet.CommandLine" -RelativePath "tools\NuGet.exe"
 
         $args = ("install", $PackageId, "-ExcludeVersion", "-PreRelease", "-NonInteractive")
+        $args = $args + @("-OutputDirectory", $OutputLocation)
         if($Version) {
             $args = $args + @("-Version", $Version)
         }
@@ -50,9 +51,11 @@ function Install-NugetPackage
         }
         & $nuget $args
 
-        if(Test-Path $PackageId) {
-            Get-ChildItem -Path $PackageId -Exclude *.nupkg | Copy-Item -Destination $OutputLocation -Recurse -Force
-            Remove-Item -Path $PackageId -Recurse -Force
+        $InstallPath = Join-Path $OutputLocation $PackageId
+
+        if(Test-Path $InstallPath) {
+            Get-ChildItem -Path $InstallPath -Exclude *.nupkg | Copy-Item -Destination $OutputLocation -Recurse -Force
+            Remove-Item -Path $InstallPath -Recurse -Force
         }
 
     }
