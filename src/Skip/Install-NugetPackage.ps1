@@ -49,7 +49,7 @@ function Install-NugetPackage
         if($Source) {
             $args = $args + @("-Source", $Source)
         }
-        & $nuget $args
+        & $nuget $args | Out-Null
 
         $InstallPath = Join-Path $OutputLocation $PackageId
 
