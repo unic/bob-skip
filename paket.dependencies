@@ -1,6 +1,6 @@
 source https://nuget.org/api/v2
 
 nuget Pester
-nuget NuGet.CommandLine < 3
+nuget NuGet.CommandLine
 nuget Unic.Bob.Keith
 nuget Unic.Bob.Wendy
